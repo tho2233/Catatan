@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catatan Cicilan</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f6fb;
+    color:#20243a;
+    padding-bottom:85px;
+}
+
+header{
+    background:#3B4371;
+    color:white;
+    padding:28px 20px 60px;
+    border-radius:0 0 28px 28px;
+}
+
+.header-content{
+    max-width:720px;
+    margin:auto;
+}
+
+.small{
+    font-size:12px;
+    opacity:.7;
+    letter-spacing:1px;
+    margin-bottom:8px;
+}
+
+header h1{
+    font-size:27px;
+    margin-bottom:7px;
+}
+
+header p{
+    font-size:13px;
+    opacity:.8;
+}
+
+.container{
+    max-width:720px;
+    margin:-30px auto 0;
+    padding:0 15px;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:15px;
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+}
+
+.section-title{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:16px;
+}
+
+.label{
+    font-size:12px;
+    color:#888;
+    margin-bottom:6px;
+}
+
+.amount-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+}
+
+.big-money{
+    font-size:28px;
+    font-weight:bold;
+    color:#3B4371;
+}
+
+.target-money{
+    text-align:right;
+    color:#777;
+    font-size:13px;
+}
+
+.target-money strong{
+    color:#20243a;
+    font-size:15px;
+}
+
+.progress-bg{
+    width:100%;
+    height:11px;
+    background:#e8eaf0;
+    border-radius:20px;
+    margin-top:18px;
+    overflow:hidden;
+}
+
+.progress{
+    height:100%;
+    width:0%;
+    background:#3B4371;
+    border-radius:20px;
+    transition:.4s;
+}
+
+.progress-info{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    color:#888;
+    margin-top:8px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.stat{
+    background:white;
+    padding:17px;
+    border-radius:18px;
+    box-shadow:0 8px 25px rgba(0,0,0,.05);
+}
+
+.stat .label{
+    margin-bottom:7px;
+}
+
+.stat-value{
+    font-size:17px;
+    font-weight:bold;
+}
+
+input,select{
+    width:100%;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:12px;
+    outline:none;
+    font-size:15px;
+    margin-bottom:14px;
+    background:white;
+}
+
+input:focus,select:focus{
+    border-color:#3B4371;
+}
+
+button{
+    border:0;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.primary{
+    width:100%;
+    padding:14px;
+    background:#3B4371;
+    color:white;
+    border-radius:13px;
+}
+
+.secondary{
+    padding:11px 14px;
+    background:#eef0f7;
+    color:#3B4371;
+    border-radius:11px;
+}
+
+.success{
+    background:#e9f7ef;
+    color:#287a48;
+    padding:13px;
+    border-radius:12px;
+    margin-top:15px;
+    text-align:center;
+    font-size:13px;
+    font-weight:bold;
+    display:none;
+}
+
+/* HISTORY */
+
+.history-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px;
+    background:#f7f8fc;
+    border-radius:14px;
+    margin-bottom:10px;
+}
+
+.history-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.icon{
+    width:40px;
+    height:40px;
+    background:#e9ebf4;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.history-date{
+    font-size:13px;
+    font-weight:bold;
+}
+
+.history-time{
+    color:#888;
+    font-size:11px;
+    margin-top:4px;
+}
+
+.history-right{
+    text-align:right;
+}
+
+.history-amount{
+    color:#3B4371;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.delete{
+    margin-top:5px;
+    background:none;
+    color:#d9534f;
+    font-size:11px;
+}
+
+.empty{
+    text-align:center;
+    padding:25px;
+    color:#999;
+    font-size:13px;
+}
+
+/* KALKULATOR */
+
+.calc-display{
+    background:#20243a;
+    color:white;
+    padding:18px;
+    border-radius:16px;
+    margin-bottom:12px;
+    text-align:right;
+}
+
+.calc-expression{
+    color:#aaa;
+    font-size:13px;
+    min-height:18px;
+}
+
+.calc-result{
+    font-size:30px;
+    font-weight:bold;
+    overflow:hidden;
+    white-space:nowrap;
+}
+
+.calc-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+}
+
+.calc-btn{
+    padding:17px 5px;
+    border-radius:12px;
+    background:#eef0f5;
+    color:#20243a;
+    font-size:16px;
+}
+
+.calc-btn.operator{
+    background:#dfe2ee;
+    color:#3B4371;
+}
+
+.calc-btn.equal{
+    background:#3B4371;
+    color:white;
+}
+
+.calc-btn.clear{
+    color:#c0392b;
+}
+
+/* SPECIAL CALC */
+
+.special-result{
+    background:#f5f6fa;
+    border-radius:15px;
+    padding:16px;
+    margin-top:8px;
+}
+
+.result-row{
+    display:flex;
+    justify-content:space-between;
+    padding:9px 0;
+    border-bottom:1px solid #e5e6eb;
+    font-size:13px;
+}
+
+.result-row:last-child{
+    border-bottom:0;
+}
+
+.result-row strong{
+    color:#3B4371;
+}
+
+/* NAV */
+
+.bottom-nav{
+    position:fixed;
+    bottom:12px;
+    left:50%;
+    transform:translateX(-50%);
+    width:calc(100% - 25px);
+    max-width:600px;
+    background:white;
+    padding:9px;
+    border-radius:20px;
+    box-shadow:0 10px 35px rgba(0,0,0,.15);
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    z-index:99;
+}
+
+.nav-btn{
+    background:none;
+    padding:8px 3px;
+    color:#999;
+    border-radius:14px;
+    font-size:11px;
+}
+
+.nav-btn span{
+    display:block;
+    font-size:20px;
+    margin-bottom:3px;
+}
+
+.nav-btn.active{
+    background:#eef0f7;
+    color:#3B4371;
+    font-weight:bold;
+}
+
+footer{
+    text-align:center;
+    color:#999;
+    font-size:10px;
+    margin-top:25px;
+}
+
+@media(max-width:450px){
+    .big-money{
+        font-size:24px;
+    }
+
+    .calc-btn{
+        padding:15px 4px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-content">
+        <div class="small">CATATAN KEUANGAN</div>
+        <h1 id="headerTitle">Uang Perpisahan</h1>
+        <p id="headerSubtitle">Catat cicilanmu sampai target tercapai.</p>
+    </div>
+</header>
+
+
+<div class="container">
+
+<!-- ================= BERANDA ================= -->
+
+<section id="home" class="page active">
+
+    <div class="card">
+
+        <div class="label">TARGET</div>
+
+        <h2 id="homeTargetName">
+            Uang Perpisahan
+        </h2>
+
+        <br>
+
+        <div class="amount-row">
+
+            <div>
+                <div class="label">Sudah terkumpul</div>
+
+                <div class="big-money" id="totalCollected">
+                    Rp0
+                </div>
+            </div>
+
+            <div class="target-money">
+                Target<br>
+                <strong id="targetAmount">
+                    Rp350.000
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="progress-bg">
+            <div class="progress" id="progressBar"></div>
+        </div>
+
+        <div class="progress-info">
+            <span id="progressPercent">0%</span>
+            <span id="remainingText">Sisa Rp350.000</span>
+        </div>
+
+        <div class="success" id="success">
+            🎉 Target sudah tercapai!
+        </div>
+
+    </div>
+
+
+    <div class="stats">
+
+        <div class="stat">
+            <div class="label">Total cicilan</div>
+            <div class="stat-value" id="transactionCount">
+                0 kali
+            </div>
+        </div>
+
+        <div class="stat">
+            <div class="label">Cicilan terakhir</div>
+            <div class="stat-value" id="lastPayment">
+                -
+            </div>
+        </div>
+
+    </div>
+
+
+    <br>
+
+    <div class="card">
+
+        <div class="section-title">
+            Tambah Cicilan
+        </div>
+
+        <div class="label">
+            Nominal
+        </div>
+
+        <input
+            type="number"
+            id="paymentInput"
+            placeholder="Contoh: 50000"
+            min="1"
+        >
+
+        <button class="primary" onclick="addPayment()">
+            + Simpan Cicilan
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- ================= KALKU ================= -->
+
+<section id="calculator" class="page">
+
+    <div class="card">
+
+        <div class="section-title">
+            Kalkulator Biasa
+        </div>
+
+        <div class="calc-display">
+            <div class="calc-expression" id="calcExpression"></div>
+            <div class="calc-result" id="calcResult">0</div>
+        </div>
+
+        <div class="calc-grid">
+
+            <button class="calc-btn clear" onclick="clearCalc()">AC</button>
+            <button class="calc-btn" onclick="backspace()">⌫</button>
+            <button class="calc-btn operator" onclick="calcInput('%')">%</button>
+            <button class="calc-btn operator" onclick="calcInput('/')">÷</button>
+
+            <button class="calc-btn" onclick="calcInput('7')">7</button>
+            <button class="calc-btn" onclick="calcInput('8')">8</button>
+            <button class="calc-btn" onclick="calcInput('9')">9</button>
+            <button class="calc-btn operator" onclick="calcInput('*')">×</button>
+
+            <button class="calc-btn" onclick="calcInput('4')">4</button>
+            <button class="calc-btn" onclick="calcInput('5')">5</button>
+            <button class="calc-btn" onclick="calcInput('6')">6</button>
+            <button class="calc-btn operator" onclick="calcInput('-')">−</button>
+
+            <button class="calc-btn" onclick="calcInput('1')">1</button>
+            <button class="calc-btn" onclick="calcInput('2')">2</button>
+            <button class="calc-btn" onclick="calcInput('3')">3</button>
+            <button class="calc-btn operator" onclick="calcInput('+')">+</button>
+
+            <button class="calc-btn" onclick="calcInput('0')">0</button>
+            <button class="calc-btn" onclick="calcInput('.')">.</button>
+            <button class="calc-btn equal" style="grid-column:span 2" onclick="calculate()">
+                =
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="section-title">
+            Kalku Target
+        </div>
+
+        <div class="label">
+            Nominal cicilan yang ingin digunakan
+        </div>
+
+        <input
+            type="number"
+            id="specialPayment"
+            placeholder="Contoh: 50000"
+        >
+
+        <button class="primary" onclick="specialCalculate()">
+            Hitung
+        </button>
+
+        <div class="special-result">
+
+            <div class="result-row">
+                <span>Target</span>
+                <strong id="spTarget">Rp0</strong>
+            </div>
+
+            <div class="result-row">
+                <span>Sudah terkumpul</span>
+                <strong id="spCollected">Rp0</strong>
+            </div>
+
+            <div class="result-row">
+                <span>Sisa</span>
+                <strong id="spRemaining">Rp0</strong>
+            </div>
+
+            <div class="result-row">
+                <span>Butuh cicilan lagi</span>
+                <strong id="spInstallments">0 kali</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="section-title">
+            Prediksi Waktu Selesai
+        </div>
+
+        <div class="label">
+            Kamu bisa mencicil berapa kali dalam seminggu?
+        </div>
+
+        <input
+            type="number"
+            id="weeklyCount"
+            placeholder="Contoh: 2"
+            min="1"
+        >
+
+        <div class="label">
+            Nominal setiap cicilan
+        </div>
+
+        <input
+            type="number"
+            id="weeklyAmount"
+            placeholder="Contoh: 50000"
+            min="1"
+        >
+
+        <button class="primary" onclick="predictFinish()">
+            Prediksi
+        </button>
+
+        <div class="special-result">
+
+            <div class="result-row">
+                <span>Per minggu</span>
+                <strong id="weeklyTotal">Rp0</strong>
+            </div>
+
+            <div class="result-row">
+                <span>Estimasi minggu</span>
+                <strong id="estimatedWeeks">0 minggu</strong>
+            </div>
+
+            <div class="result-row">
+                <span>Estimasi cicilan</span>
+                <strong id="estimatedPayments">0 kali</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="section-title">
+            Persentase Target
+        </div>
+
+        <div class="special-result">
+
+            <div class="result-row">
+                <span>Sudah terkumpul</span>
+                <strong id="percentCollected">0%</strong>
+            </div>
+
+            <div class="result-row">
+                <span>Belum terkumpul</span>
+                <strong id="percentRemaining">100%</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= RIWAYAT ================= -->
+
+<section id="history" class="page">
+
+    <div class="card">
+
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:15px;
+        ">
+
+            <div class="section-title" style="margin:0;">
+                Riwayat Cicilan
+            </div>
+
+            <button class="secondary" onclick="clearHistory()">
+                Reset
+            </button>
+
+        </div>
+
+        <div id="historyList"></div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= TARGET ================= -->
+
+<section id="target" class="page">
+
+    <div class="card">
+
+        <div class="section-title">
+            Pengaturan Target
+        </div>
+
+        <div class="label">
+            Nama target
+        </div>
+
+        <input
+            type="text"
+            id="newTargetName"
+            placeholder="Contoh: Uang Perpisahan"
+        >
+
+        <div class="label">
+            Nominal target
+        </div>
+
+        <input
+            type="number"
+            id="newTargetAmount"
+            placeholder="Contoh: 350000"
+        >
+
+        <button class="primary" onclick="changeTarget()">
+            🔄 Simpan Target Baru
+        </button>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="section-title">
+            Informasi Target
+        </div>
+
+        <div class="result-row">
+            <span>Nama</span>
+            <strong id="infoName">-</strong>
+        </div>
+
+        <div class="result-row">
+            <span>Nominal</span>
+            <strong id="infoAmount">Rp0</strong>
+        </div>
+
+        <div class="result-row">
+            <span>Total terkumpul</span>
+            <strong id="infoCollected">Rp0</strong>
+        </div>
+
+        <div class="result-row">
+            <span>Sisa</span>
+            <strong id="infoRemaining">Rp0</strong>
+        </div>
+
+    </div>
+
+</section>
+
+
+<footer>
+    Catatan Cicilan • Data tersimpan otomatis di perangkat
+</footer>
+
+</div>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="bottom-nav">
+
+    <button
+        class="nav-btn active"
+        onclick="showPage('home',this)"
+    >
+        <span>⌂</span>
+        Beranda
+    </button>
+
+    <button
+        class="nav-btn"
+        onclick="showPage('calculator',this)"
+    >
+        <span>∑</span>
+        Kalku
+    </button>
+
+    <button
+        class="nav-btn"
+        onclick="showPage('history',this)"
+    >
+        <span>◷</span>
+        Riwayat
+    </button>
+
+    <button
+        class="nav-btn"
+        onclick="showPage('target',this)"
+    >
+        <span>⚙</span>
+        Target
+    </button>
+
+</nav>
+
+
+<script>
+
+/* =========================================
+   DATA
+========================================= */
+
+let data = JSON.parse(
+    localStorage.getItem("catatanCicilan")
+) || {
+    targetName:"Uang Perpisahan",
+    targetAmount:350000,
+    payments:[]
+};
+
+
+/* =========================================
+   FORMAT RUPIAH
+========================================= */
+
+function rupiah(number){
+
+    return new Intl.NumberFormat(
+        "id-ID",
+        {
+            style:"currency",
+            currency:"IDR",
+            minimumFractionDigits:0
+        }
+    ).format(number);
+
+}
+
+
+/* =========================================
+   SAVE
+========================================= */
+
+function saveData(){
+
+    localStorage.setItem(
+        "catatanCicilan",
+        JSON.stringify(data)
+    );
+
+}
+
+
+/* =========================================
+   TOTAL
+========================================= */
+
+function getTotal(){
+
+    return data.payments.reduce(
+        (total,payment)=>total+payment.amount,
+        0
+    );
+
+}
+
+
+/* =========================================
+   TAMBAH CICILAN
+========================================= */
+
+function addPayment(){
+
+    const input =
+        document.getElementById("paymentInput");
+
+    const amount =
+        Number(input.value);
+
+    if(!amount || amount<=0){
+
+        alert("Masukkan nominal cicilan.");
+
+        return;
+
+    }
+
+
+    const now = new Date();
+
+    data.payments.unshift({
+
+        amount:amount,
+
+        date:now.toLocaleDateString(
+            "id-ID",
+            {
+                weekday:"long",
+                day:"numeric",
+                month:"long",
+                year:"numeric"
+            }
+        ),
+
+        time:now.toLocaleTimeString(
+            "id-ID",
+            {
+                hour:"2-digit",
+                minute:"2-digit",
+                second:"2-digit"
+            }
+        )
+
+    });
+
+
+    saveData();
+
+    input.value="";
+
+    render();
+
+}
+
+
+/* =========================================
+   DELETE
+========================================= */
+
+function deletePayment(index){
+
+    if(!confirm("Hapus cicilan ini?")) return;
+
+    data.payments.splice(index,1);
+
+    saveData();
+
+    render();
+
+}
+
+
+/* =========================================
+   RESET
+========================================= */
+
+function clearHistory(){
+
+    if(data.payments.length===0){
+
+        alert("Belum ada riwayat.");
+
+        return;
+
+    }
+
+    if(!confirm(
+        "Yakin ingin menghapus semua riwayat?"
+    )) return;
+
+    data.payments=[];
+
+    saveData();
+
+    render();
+
+}
+
+
+/* =========================================
+   GANTI TARGET
+========================================= */
+
+function changeTarget(){
+
+    const name =
+        document.getElementById(
+            "newTargetName"
+        ).value.trim();
+
+    const amount =
+        Number(
+            document.getElementById(
+                "newTargetAmount"
+            ).value
+        );
+
+
+    if(!name){
+
+        alert("Masukkan nama target.");
+
+        return;
+
+    }
+
+
+    if(!amount || amount<=0){
+
+        alert("Masukkan nominal target.");
+
+        return;
+
+    }
+
+
+    if(!confirm(
+        `Ganti target menjadi ${name} sebesar ${rupiah(amount)}?`
+    )) return;
+
+
+    data.targetName=name;
+
+    data.targetAmount=amount;
+
+    saveData();
+
+    document.getElementById(
+        "newTargetName"
+    ).value="";
+
+    document.getElementById(
+        "newTargetAmount"
+    ).value="";
+
+    render();
+
+    alert("Target berhasil diperbarui.");
+
+}
+
+
+/* =========================================
+   RENDER
+========================================= */
+
+function render(){
+
+    const total=getTotal();
+
+    const target=data.targetAmount;
+
+    const remaining=Math.max(
+        target-total,
+        0
+    );
+
+    const percent=target>0
+        ?Math.min(
+            total/target*100,
+            100
+        )
+        :0;
+
+
+    document.getElementById(
+        "headerTitle"
+    ).textContent=data.targetName;
+
+    document.getElementById(
+        "homeTargetName"
+    ).textContent=data.targetName;
+
+    document.getElementById(
+        "totalCollected"
+    ).textContent=rupiah(total);
+
+    document.getElementById(
+        "targetAmount"
+    ).textContent=rupiah(target);
+
+    document.getElementById(
+        "progressBar"
+    ).style.width=percent+"%";
+
+    document.getElementById(
+        "progressPercent"
+    ).textContent=Math.round(percent)+"%";
+
+
+    document.getElementById(
+        "remainingText"
+    ).textContent=
+        remaining===0
+        ?"Selesai 🎉"
+        :"Sisa "+rupiah(remaining);
+
+
+    document.getElementById(
+        "success"
+    ).style.display=
+        remaining===0
+        ?"block"
+        :"none";
+
+
+    document.getElementById(
+        "transactionCount"
+    ).textContent=
+        data.payments.length+" kali";
+
+
+    document.getElementById(
+        "lastPayment"
+    ).textContent=
+        data.payments.length
+        ?rupiah(data.payments[0].amount)
+        :"-";
+
+
+    /* INFO TARGET */
+
+    document.getElementById(
+        "infoName"
+    ).textContent=data.targetName;
+
+    document.getElementById(
+        "infoAmount"
+    ).textContent=rupiah(target);
+
+    document.getElementById(
+        "infoCollected"
+    ).textContent=rupiah(total);
+
+    document.getElementById(
+        "infoRemaining"
+    ).textContent=rupiah(remaining);
+
+
+    /* PERSENTASE */
+
+    document.getElementById(
+        "percentCollected"
+    ).textContent=
+        Math.round(percent)+"%";
+
+    document.getElementById(
+        "percentRemaining"
+    ).textContent=
+        Math.max(
+            0,
+            Math.round(100-percent)
+        )+"%";
+
+
+    /* HISTORY */
+
+    const history=
+        document.getElementById(
+            "historyList"
+        );
+
+    history.innerHTML="";
+
+
+    if(data.payments.length===0){
+
+        history.innerHTML=`
+            <div class="empty">
+                Belum ada riwayat cicilan.
+            </div>
+        `;
+
+    }else{
+
+        data.payments.forEach(
+            (payment,index)=>{
+
+                history.innerHTML+=`
+
+                <div class="history-item">
+
+                    <div class="history-left">
+
+                        <div class="icon">
+                            💰
+                        </div>
+
+                        <div>
+
+                            <div class="history-date">
+                                ${payment.date}
+                            </div>
+
+                            <div class="history-time">
+                                Pukul ${payment.time}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="history-right">
+
+                        <div class="history-amount">
+                            +${rupiah(payment.amount)}
+                        </div>
+
+                        <button
+                            class="delete"
+                            onclick="deletePayment(${index})"
+                        >
+                            Hapus
+                        </button>
+
+                    </div>
+
+                </div>
+
+                `;
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
+function showPage(page,button){
+
+    document.querySelectorAll(
+        ".page"
+    ).forEach(
+        p=>p.classList.remove("active")
+    );
+
+
+    document.getElementById(
+        page
+    ).classList.add("active");
+
+
+    document.querySelectorAll(
+        ".nav-btn"
+    ).forEach(
+        b=>b.classList.remove("active")
+    );
+
+
+    button.classList.add("active");
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+/* =========================================
+   KALKULATOR BIASA
+========================================= */
+
+let calcValue="";
+
+function calcInput(value){
+
+    calcValue+=value;
+
+    document.getElementById(
+        "calcResult"
+    ).textContent=calcValue;
+
+}
+
+
+function clearCalc(){
+
+    calcValue="";
+
+    document.getElementById(
+        "calcResult"
+    ).textContent="0";
+
+    document.getElementById(
+        "calcExpression"
+    ).textContent="";
+
+}
+
+
+function backspace(){
+
+    calcValue=
+        calcValue.slice(
+            0,
+            -1
+        );
+
+    document.getElementById(
+        "calcResult"
+    ).textContent=
+        calcValue || "0";
+
+}
+
+
+function calculate(){
+
+    if(!calcValue) return;
+
+    try{
+
+        let expression=
+            calcValue.replace(
+                /%/g,
+                "/100"
+            );
+
+        let result=
+            Function(
+                `"use strict";return (${expression})`
+            )();
+
+        document.getElementById(
+            "calcExpression"
+        ).textContent=
+            calcValue+" =";
+
+        calcValue=
+            String(
+                Math.round(
+                    result*100000
+                )/100000
+            );
+
+        document.getElementById(
+            "calcResult"
+        ).textContent=
+            calcValue;
+
+    }catch{
+
+        document.getElementById(
+            "calcResult"
+        ).textContent=
+            "Error";
+
+        calcValue="";
+
+    }
+
+}
+
+
+/* =========================================
+   KALKULATOR KHUSUS TARGET
+========================================= */
+
+function specialCalculate(){
+
+    const amount=
+        Number(
+            document.getElementById(
+                "specialPayment"
+            ).value
+        );
+
+    const target=data.targetAmount;
+
+    const collected=getTotal();
+
+    const remaining=Math.max(
+        target-collected,
+        0
+    );
+
+
+    if(!amount || amount<=0){
+
+        alert(
+            "Masukkan nominal cicilan."
+        );
+
+        return;
+
+    }
+
+
+    const installments=
+        remaining===0
+        ?0
+        :Math.ceil(
+            remaining/amount
+        );
+
+
+    document.getElementById(
+        "spTarget"
+    ).textContent=
+        rupiah(target);
+
+    document.getElementById(
+        "spCollected"
+    ).textContent=
+        rupiah(collected);
+
+    document.getElementById(
+        "spRemaining"
+    ).textContent=
+        rupiah(remaining);
+
+    document.getElementById(
+        "spInstallments"
+    ).textContent=
+        installments+" kali";
+
+}
+
+
+/* =========================================
+   PREDIKSI SELESAI
+========================================= */
+
+function predictFinish(){
+
+    const count=
+        Number(
+            document.getElementById(
+                "weeklyCount"
+            ).value
+        );
+
+    const amount=
+        Number(
+            document.getElementById(
+                "weeklyAmount"
+            ).value
+        );
+
+
+    if(
+        !count ||
+        count<=0 ||
+        !amount ||
+        amount<=0
+    ){
+
+        alert(
+            "Isi jumlah cicilan dan nominalnya."
+        );
+
+        return;
+
+    }
+
+
+    const remaining=
+        Math.max(
+            data.targetAmount-getTotal(),
+            0
+        );
+
+
+    const weeklyTotal=
+        count*amount;
+
+
+    const weeks=
+        remaining===0
+        ?0
+        :Math.ceil(
+            remaining/weeklyTotal
+        );
+
+
+    const payments=
+        remaining===0
+        ?0
+        :Math.ceil(
+            remaining/amount
+        );
+
+
+    document.getElementById(
+        "weeklyTotal"
+    ).textContent=
+        rupiah(weeklyTotal);
+
+    document.getElementById(
+        "estimatedWeeks"
+    ).textContent=
+        weeks+" minggu";
+
+    document.getElementById(
+        "estimatedPayments"
+    ).textContent=
+        payments+" kali";
+
+}
+
+
+/* =========================================
+   KEYBOARD CALCULATOR
+========================================= */
+
+document.addEventListener(
+    "keydown",
+    function(e){
+
+        if(
+            e.key>="0" &&
+            e.key<="9"
+        ){
+
+            calcInput(e.key);
+
+        }
+
+        if(
+            ["+","-","*","/","%","."]
+            .includes(e.key)
+        ){
+
+            calcInput(e.key);
+
+        }
+
+        if(e.key==="Enter"){
+
+            calculate();
+
+        }
+
+        if(e.key==="Backspace"){
+
+            backspace();
+
+        }
+
+        if(e.key==="Escape"){
+
+            clearCalc();
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   START
+========================================= */
+
+render();
+
+</script>
+
+</body>
+</html>
